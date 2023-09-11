@@ -1,0 +1,32 @@
+{부서관리}
+1. 목록화면 deptList.jsp
+2. 등록화면 deptWrite.jsp
+3. 등록처리 deptWriteSave.jsp
+4. 수정화면 deptModify.jsp
+  --저장내용 출력
+5. 수정처리 deptModifySave.jsp
+6. 삭제처리 deptDelete.jsp
+
+---------------------------------------------------------------
+{사원관리}
+-emp 폴더 생성-
+1. empList.jsp
+  ( 번호,사원번호,사원이름,부서이름,입사일)
+2. empWrite.jsp ->empWriteSave.jsp
+  ( 사원번호 자동 출력,매니저이름,부서선택,업무선택)
+  사원번호[     ]
+  사원이름[     ]
+  급여    [     ]
+  입사일  [     ]
+  업무    [     ]
+  매니저  [     ]
+  커미션  [      ]
+  부서    [     ]
+ 
+      (저장) (취소)
+      
+3.empWriteSave.jsp
+4.empModify.jsp
+5.empModifySave.jsp
+6.empDelete.jsp
+

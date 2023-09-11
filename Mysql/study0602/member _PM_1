@@ -1,0 +1,138 @@
+[회원정보 관리 테이블]
+1. 회원 기본정보
+-- datetime : 오라클에서의 timestamp, 
+create table mbr_info(
+  unq int unsigned not null auto_increment,
+  userid varchar(20) not null,
+  pass varchar(100) not null,
+  name varchar(20) not null,
+  gender enum('M','F') not null,
+  birthday date not null,
+  phone varchar(20),
+  rdate datetime,
+  primary key(unq)
+  )
+ 2.회원 기타정보
+  -- mysql은 foreign key 설정불가 : 요즘 버전은 될 수도 있음
+ create table mbr_other(
+  userid varchar(20) not null,
+  job varchar(4),
+  hobby varchar(4),
+  blood enum('A','O','B','AB')
+  );
+ 3.코드 테이블
+ create table mbr_code(
+  unq int unsigned not null auto_increment,
+  code_type varchar(2),
+  code_id varchar(4),
+  code_name varchar(20),
+  primary key(unq)
+  );
+  
+  --데이터 입력
+  1.코드 테이블 데이터 입력
+  insert into mbr_code values('','c1','h001','태권도');
+  insert into mbr_code values('','c1','h002','야구');
+  insert into mbr_code values('','c1','h003','축구');
+  insert into mbr_code values('','c2','j001','개발');
+  insert into mbr_code values('','c2','j002','컨설팅');
+  insert into mbr_code values('','c2','j003','디자인');
+  
+  2.회원 기본정보 데이터 입력 --password : 암호화 함수 ,  md5 : 암호화 함수  ,now() : 현재시간 함수
+  insert into mbr_info values('','test1',password('1234'),'홍길동','M','2000-12-25','010-777-7777','2021-01-10');
+  insert into mbr_info values('','test2',password('123456'),'이영희','F','1998-10-25','017-777-1212','2021-02-01');
+  insert into mbr_info values('','test3',password('11111'),'이성계','M','2001-07-07','010-2563-1234',now());
+  insert into mbr_info values('','test4',md5('7777'),'호돌이','M','1988-07-07','010-3434-1212',now());
+  
+  select now();
+  3.기타정보 입력
+  insert into mbr_other values ('test1','j002','h003','O');
+  insert into mbr_other values ('test2','j003','h002','AB');
+  insert into mbr_other values ('test3','j001','h002','B');
+  
+  --데이터 출력
+  (1) 아이디 : test1, 이름 : 홍길동, 생년 : 2000년생
+    select userid '아이디',
+           name '이름',
+           substr(birthday,1,4) '생년'
+           from mbr_info;
+   (1.1) 함수 이용
+       select userid '아이디',
+           name '이름',
+           substr(birthday,1,4) '생년',
+           year(birthday)
+           from mbr_info;
+   
+  (2) 아이디 : test1, 이름 : 홍길동, 성별 : 남, 나이 : 2000년생, 등록일 : 2021-01-10
+    select userid '아이디',
+           name '이름',
+           if(gender= 'M','남','여') '성별',
+           substr(now(), 1,4) - substr(birthday,1,4) '나이', 
+           rdate 
+           from mbr_info;
+  (3) 암호가 1234로 되어 있는 데이터를 출력한다
+    select *from mbr_info where pass=password('1234');
+    select *from mbr_info where pass=md5('7777')
+  (4) 2021년 2월 이후 등록자들의 이름과 전번을 출력한다
+    select name,phone,rdate from mbr_info where rdate >'2021-02-01';
+  (5) 핸드폰 번호가 010이 아닌 데이터를 출력한다
+    select * from mbr_info where phone not like '010%';
+  (6) 아이디가 test로 시작되는 데이터를 출력한다
+    select userid,name,birthday from mbr_info where userid like 'test%';
+                         
+  (7) 아이디 이름 혈액형을 출력한다
+    select i.userid, i.name,o.blood from mbr_info i ,mbr_other o where i.userid=o.userid;
+  (8) 아이디 직업 취미를 출력한다
+      select i.userid,
+             i.name,
+             (select code_name from mbr_code where code_id=o.job) as job,
+             (select code_name from mbr_code where code_id=o.hobby) as hobby
+             from mbr_info i, mbr_other o 
+             where i.userid=o.userid;
+  (8.1) 조인문 사용
+      select i.userid,
+             i.name,
+             c1.code_name as job,
+             c2.code_name as hobby
+      from mbr_info i, mbr_other o, mbr_code c1, mbr_code c2
+      where 
+        i.userid = o.userid
+        and o.job = c1.code_id
+        and o.hobby = c2.code_id;
+        
+  (9) 홍길동의 취미를 출력한다
+      select i.userid,
+             i.name,
+             c.code_name as hobby
+                from mbr_info i ,mbr_other o,mbr_code c 
+                where i.userid=o.userid 
+                  and o.hobby =c.code_id
+                  and i.name='홍길동';
+  (10) 홍길동의 직업을 출력한다
+      select i.userid,
+             i.name,
+             c.code_name as job
+                from mbr_info i ,mbr_other o,mbr_code c 
+                where i.userid=o.userid 
+                  and o.job =c.code_id
+                  and i.name='홍길동';
+  (11) 야구가 취미인 사람을 출력한다
+      select i.userid,
+             i.name,
+             c.code_name as hobby
+                from mbr_info i ,mbr_other o,mbr_code c 
+                where i.userid=o.userid 
+                  and o.hobby =c.code_id
+                  and c.code_name='야구';
+      
+      
+ ** 함수
+ select now(),
+        year( now() ),
+        month( now() ),
+        day ( now() ),
+        hour( now() ),
+        minute( now() ),
+        second ( now() )
+        from dual;
+ 

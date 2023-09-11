@@ -1,0 +1,25 @@
+
+실습 1 
+테이블 생성
+
+1.테이블 목록
+select name from tab; (*: 모두)
+2.테이블 생성
+create table test1 (a varchar2(5),b varchar2(5));   -> varchar 문자타입; (n) n 열 최대값(공간)
+3.테이블 데이터 입력
+insert into 테이블명(컬럼명1,컬럼명2, ...) values('값1','값2','...');
+4.테이블 구조 변경
+alter table 테이블명 옵션(modify) 컬럼명 컬럼타입(공간);
+--구조 출력 desc test1
+5.데이터 삭제
+delete from test1;
+6.테이블 삭제
+drop table test1; (rollback x)
+7. 테이블 컬럼명 변경
+alter table 테이블명 rename column 이전 컬럼명 to 새로운컬럼명;
+8. 테이블 컬럼 타입 및 길이변경
+alter talble 테이블명 modify 컬럼명 varchar2(50);
+9.컬럼출력
+select 컬럼명1,컬럼명2 from 테이블명
+10. 해당 데이터가 포함된 컬럼의 데이터 출력 
+select 출력데이터 컬렁 from where 컬럼 ='data';

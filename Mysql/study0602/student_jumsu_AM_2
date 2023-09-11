@@ -1,0 +1,126 @@
+[3강] 학생점수 관리
+
+--테이블 생성
+--auto_increment : mysql에서 oracle의 시퀀스 역할  , unsigned : 음수공간이 양수공간으로 바뀌면서 양수공간이 늘어남
+임포트 할땐 unq 값이 있어서 auto_increment가 상관이 없는데
+ 데이터 추가하면 그 후부터 auto_increment 적용 
+
+
+create table studentScore(
+  unq int not null auto_increment,
+  userid varchar(10) not null,
+  loc varchar(10) not null,
+  kor tinyint unsigned default'0',
+  eng tinyint unsigned default'0',
+  primary key(unq)
+  );
+
+-- 데이터 임포트 
+import : student_jumsu.csv  , 데이터 구분자 : ,
+ SELECT * FROM studentScore order by unq asc limit 40 --unq 순으로 출력
+ SELECT * FROM studentScore order by unq asc limit 5 --eng점수 순으로 출력
+ -- 6~10등 limt 5,5 ->  6번부터 5개 가져옴
+ limit index번호(행번호),출력개수
+  SELECT * FROM studentScore order by unq asc limit 5,5  -- 6~10등
+
+--내용수정
+주소 정보에 해당하는 loc 컬럼 값을 변경한다.
+1:서울, 2:대구, 3:원주, 4:전주
+update studentscore set loc = case when loc='1' then '서울'
+                                   when loc='2' then '대구'
+                                   when loc='3' then '원주'
+                                   when loc='4' then '전주'
+                               end;
+
+--실습예제
+(1)영어점수를 1등부터 줄력한다
+select eng from studentscore order by eng desc;
+(2)영어점수 중 최고점을 출력한다
+select userid,max(eng) from studentscore where eng;
+(3)아이디 101의 평균을 출력한다 (hint:행의 연산은 함수가 없으므로 일일히 더하고 평균을 낸다)
+select avg(eng+kor) as avg from studentscore where userid = 'st101';
+(4)국어점수가 60점 미만인 학생의 아이디를 출력하시오
+select userid,kor from studentscore where kor<60;
+(5)두 과목 모두 60점 이상인 학생들을 출력한다.(hint: and 조건 검색)
+select userid,kor,eng from studentscore where kor>=60 and eng>=60;
+(6)두 과목 중 한 과목 이라도 60점 미만이 있는 학생들을 출력한다.(hint : or 조건 검색)
+select userid,kor,eng from studentscore where kor<60 or eng<60;
+--LIMIT 절
+(7)영어점수 기준으로 1등부터 5등까지 학생들을 출력하시오
+select *from studentscore order by eng desc limit 0,5;
+(8)영어점수 기준 6등~10등인 학생들을 출력한다.
+select *from studentscore order by eng desc limit 5,5; 
+(9)전체 총합 1등의 아이디,이름,총합점수를 출력한다.
+select userid,eng+kor from studentscore where eng+kor order by eng+kor desc limit 1;
+
+--공동 1등 출력
+select userid,(kor+eng) hap from studentscore where (kor+eng) =(select max(kor+eng) from studentscore);
+
+(10)아이디가 101인 데이터의 영어점수에 +5를 적용한다.
+select userid,(eng)+5 from studentscore where userid like '%101%';
+
+update studentscore set eng=eng+5 where userid like '%101%';
+
+(11)대구지역 학생 목록을 출력한다.
+select userid from studentscore where loc='대구';
+(12)대구지역 학생 수를 출력한다.
+select count(*) from studentscore where loc='대구';
+(13)대구지역에서 영어점수가 가장 높은 학생의 아이디와 영어점수를 출력한다.
+select userid,eng from studentscore where loc='대구' order by eng desc limit 1 ;
+--공동 1등 출력
+select userid,eng from studentscore where loc='대구' and eng =(select max(eng) from studentscore where loc='대구');
+(14)대구지역에서 두 과목 합계 1등의 아이디와 총점을 출력한다.
+select userid,(kor+eng) hap , loc from studentscore where loc ='대구' and (kor+eng) =(select max(kor+eng) from studentscore where loc='대구') ;
+(15) 영어 학점 출력 case 문으로 바꿔서 출력
+select userid,
+       eng,
+       case  when eng>=90 then 'A'
+             when eng>=80 then 'B'
+             when eng>=70 then 'C'
+             when eng>=60 then 'D'
+             else 'F'
+      end   as 'eng_grade'
+       from studentscore;
+(15-1) 국어, 영어 학점
+select userid,
+       kor,
+       case  when kor>=90 then 'A'
+             when kor>=80 then 'B'
+             when kor>=70 then 'C'
+             when kor>=60 then 'D'
+             else 'F'
+      end   as 'kor_grade',
+       eng,
+       case  when eng>=90 then 'A'
+             when eng>=80 then 'B'
+             when eng>=70 then 'C'
+             when eng>=60 then 'D'
+             else 'F'
+      end   as 'eng_grade'
+       from studentscore;  
+(15-2) 뷰 테이블 생성 --업데이트 
+create view v_studentscore1 as 
+select userid,
+       kor,
+       case  when kor>=90 then 'A'
+             when kor>=80 then 'B'
+             when kor>=70 then 'C'
+             when kor>=60 then 'D'
+             else 'F'
+      end   as 'kor_grade',
+       eng,
+       case  when eng>=90 then 'A'
+             when eng>=80 then 'B'
+             when eng>=70 then 'C'
+             when eng>=60 then 'D'
+             else 'F'
+      end   as 'eng_grade'
+       from studentscore;  
+       
+---뷰 테이블 사용
+ select * from v_studentscore1 order by eng_grade asc;
+ select eng_grade as '학점',
+        count(*) as '인원수',
+        round(avg(eng)) as '평균' 
+        from v_studentscore1
+  group by eng_grade;

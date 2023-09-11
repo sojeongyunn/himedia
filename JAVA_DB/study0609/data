@@ -1,0 +1,22 @@
+[데이터 임포트 작업]
+post1.csv -> post2 테이블
+
+1. PostImportService
+  텍스트파일(post.csv) -> DB테이블(post) :: 저장
+[데이터 익스포트 작업]
+2. PostExportService
+  DB테이블(post) -> 텍스트파일(post.csv)
+
+3. PostSearchService
+(1)우편번호검색
+String sql = "Select (a1||' '||a2||' '||a3||' '||a4||' '"
+					+ "||a5||' '||a6||' '||a7) as address from post2 "
+					+ "where a1='1234'";
+(2) 시도검색
+String sql = "Select (a1||' '||a2||' '||a3||' '||a4||' '"
+					+ "||a5||' '||a6||' '||a7) as address from post2 "
+					+ "where a2 like '%대구%'";
+(3) 구군검색
+String sql = "Select (a1||' '||a2||' '||a3||' '||a4||' '"
+					+ "||a5||' '||a6||' '||a7) as address from post2 "
+					+ "where a1='1234'";

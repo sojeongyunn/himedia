@@ -1,0 +1,84 @@
+vi pass2.txt
+[vi editer]
+2강 내용 
+x 버튼 -> 글자한개 삭제
+dd -> 한줄 삭제
+yy -> 한줄저장
+p -> 붙여넣기
+
+------------------------------
+ls -l etc > etc.txt
+vi etc.txt
+:set number
+---------------------------------
+su - root   계정변경
+password:
+pwd
+/root
+
+(1) /etc 디렉토리로 이동
+cd /etc 
+pwd
+(2) 리눅스계정의 홈디렉토리
+cd /home/linux
+pwd
+(3) 생성 디렉토리로 이동
+mkdir a1
+mkdir a2
+cd a1
+pwd
+
+{상대경로}
+cd ../a2
+pwd
+{절대경로}
+cd /home/aa/a1
+pwd
+------------------------
+[계정생성]
+useradd test1
+
+(계정명): (암호):(계정ID):(그룹ID):(홈드렉토리):(리눅스쉘)
+linux:x:1000:1000:://home/linux:/bin/bash
+test1:x:1000:1000:://home/test1:/bin/bash
+test2:x:1000:1000:://home/test2:/bin/bash
+
+cat/etc/shadow 암호등록파일
+-----------------------------
+{계정삭제}
+userdel -r test1
+cat /etc/passwd
+------------------
+who -접속자 목록확인
+-------------------
+{로그인 메세지}
+vi /etc/issue
+-------------------
+{파일찾기}
+find /-name passwd
+find / -user test2 ---test2 계정이 소유주로 되어있는 파일들
+find / -perm 777
+--------------------
+{출력제한}
+cat /etc/passwd
+head -5 /etc/passwd
+tail -5 /etc/passwd
+--------------------
+{프로세스 강제종료}
+- 프로그램 > 프로세스 :  
+ps -aux ->현재 실행중인 프로세서 출력
+vi abc.txt -->오픈하고 그냥 열어놓음
+다른콘솔에서 root 로그인
+ps - aux ->프로그램 코드 확인
+kill -9 number ->프로세서 삭제
+--------------------
+{파일비교}
+cp /etc/passwd
+vp rvy/psddeef
+hunn =0;
+vi p3 ='
+pusff -
+
+---------------
+{less} 화면단위 끊기 옵션
+ls /etc |less

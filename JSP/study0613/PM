@@ -1,0 +1,63 @@
+[ 데이터전송 ]
+-GET 방식 / POST방식
+
+1.getTest1.jsp -> 파일생성
+
+외부에서 eng 에 대한 값을 받아올거임
+외부에서 받아오는 데이터는 무조건 String 타입으로 받아옴
+<%
+String eng2 = request.getParameter("eng");
+out.print(eng2);
+%>
+http://웹주소:포트번호/프로젝트명/파일명
+http://localhost:8080/jsp_project/getTest1.jsp  ? eng =100   -> 변경 eng =100 &kor=90
+
+GET방식: 주소표기 뒤에 변수를 설정하여 전송하는 방식
+
+2.getTest2.jsp-> 파일생성
+<a href="http://localhost:8080/jsp_project/getTest1.jsp?eng=80&kor=90">점수 전송</a>    ->링크
+
+--------------------------------------------------------------------------------------------------
+{아이디&암호 전송} GET방식 전송
+1.getTest3.jsp ->파일생성
+<a href="getTest3_sub.jsp?userid=hong&pass=1234&name=홍길동">홍길동</a>
+	<br>
+<a href="getTest3_sub.jsp?userid=soonsin&pass=1111&name=이순신">이순신</a>
+
+전송되는 데이터들이 보임
+
+------
+-
+2.getTest3_sub.jsp ->파일생성 (단독실행불가)
+<%
+String userid = request.getParameter("userid");
+String pass = request.getParameter("pass");
+String name	= request.getParameter("name");
+String gender = request.getParameter("gender");
+%>
+전송Id:<%=userid%><br>
+전송Pw:<%=pass %><br>
+전송Nm:<%=name %><br>
+전송성별:<%=gender %>
+전송되는 데이터 들은 get방식으로 들어오든 post방식으로 들어오든 getParameter 메소드 사용
+@@@@@@@@@@@@@@  한글 깨질시 상단에 <% request.setCharacterEncoding("UTF-8"); %>  @@@@@@@@@@@@@@@@@@@@@@
+--------------------------------------------------------------------------------------------------
+{아이디 & 암호 전송} POST방식 전송
+1.postTest3.jsp
+
+<form name="frm" method="post" action="getTest3_sub.jsp">
+아이디<input type="text" name="userid"> <br>
+암호<input type="text" name="pass"> <br>
+이름<input type="text" name="name"> <br>
+성별<input type="radio" name="gender" value="M">남성,
+<input type="radio" name="gender" value="F">여성<br>
+<input type="submit" value="전송">
+</form>
+
+전송되는 데이터들이 보이지 않음
+-> method="get" -> 메소드를 겟으로 바뀌면 주소에 데이터들이 노출됨
+------
+2.getTest3_sub.jsp
+체크박스 다중선택시 반복문 선언으로 받아와야함
+
+String [] hobby =request.getParameterValues("hobby");
