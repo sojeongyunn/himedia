@@ -21,7 +21,7 @@ public class ans {
 		}else if (n==3) {	//핸드폰
 			pattern = "^01(0|1|5)-[0-9]{3,4}-[0-9]{4}";//우선적으로 ^01 오고 0 또는 1 또는 5			
 		}
-		return value.matches(pattern); 		//값을 패턴에 매치 시킴
+		return value.matches(pattern); 		//값을 패턴에 매치 시켜야함
 	}
 	
 	public static boolean memberCheck(String id) throws Exception {	//중복체크 메소드
